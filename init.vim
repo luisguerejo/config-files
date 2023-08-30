@@ -7,23 +7,30 @@ set wildmode=longest, list
 filetype plugin indent on
 set mouse=a
 set clipboard=unnamedplus
+set shiftwidth=4
+set tabstop=4
 set termguicolors
+set noshowmode
 
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 
 Plug 'connorholyday/vim-snazzy'
-Plug 'neovim/nvim-lspconfig'
-Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 Plug 'andweeb/presence.nvim'
 Plug 'dense-analysis/ale'
-Plug 'hrsh7th/nvim-cmp'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/nerdtree'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'davidhalter/jedi-vim'
+Plug 'itchyny/lightline.vim'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
-Plug '
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+Plug 'wellle/context.vim'
 
 call plug#end()
 
@@ -31,27 +38,33 @@ colorscheme snazzy
 syntax on
 
 let g:jedi#use_splits_not_buffers = "right"
+let g:ale_linters = {
+			\ 'rust' : ['analyzer'],
+			\ 'go' : ['gopls'],
+			\ }
+let g:lightline = {
+      \ 'colorscheme': 'powerline',
+      \ }
 
 
-autocmd VimEnter * NERDTree
+if !has('gui_running')
+	set t_Co=256
+endif
 
 lua <<EOF
   -- Set up nvim-cmp.
+  local root_dir = vim.fn.getcwd()
   local cmp = require'cmp'
 
   cmp.setup({
     snippet = {
-      -- REQUIRED - you must specify a snippet engine
       expand = function(args)
         vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
       end,
     },
     window = {
       -- completion = cmp.config.window.bordered(),
-      -- documentation = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
     },
     mapping = cmp.mapping.preset.insert({
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -63,9 +76,6 @@ lua <<EOF
     sources = cmp.config.sources({
       { name = 'nvim_lsp' },
       { name = 'vsnip' }, -- For vsnip users.
-      -- { name = 'luasnip' }, -- For luasnip users.
-      -- { name = 'ultisnips' }, -- For ultisnips users.
-      -- { name = 'snippy' }, -- For snippy users.
     }, {
       { name = 'buffer' },
     })
@@ -99,9 +109,46 @@ lua <<EOF
   })
 
   -- Set up lspconfig.
-  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  	local nvim_lsp = require'lspconfig'
+	local util = require('lspconfig/util')
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
-    capabilities = capabilities
-  }
+  nvim_lsp.gopls.setup ({
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+  })
+
+  nvim_lsp.pylsp.setup{} -- Python lsp
+  nvim_lsp.clangd.setup{} -- C-lang LSP
+
+  nvim_lsp.rust_analyzer.setup({ -- Rust LSP
+    on_attach=on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
+require("bufferline").setup{}
 EOF
