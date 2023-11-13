@@ -1,5 +1,3 @@
-set nocompatible
-set showmatch
 set ignorecase
 set autoindent
 set number
@@ -7,20 +5,24 @@ set wildmode=longest, list
 filetype plugin indent on
 set mouse=a
 set clipboard=unnamedplus
-set shiftwidth=4
-set tabstop=4
+set shiftwidth=2
+set tabstop=2
 set termguicolors
 set noshowmode
+set relativenumber
 
 call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
-
+" Themes
 Plug 'connorholyday/vim-snazzy'
-Plug 'andweeb/presence.nvim'
+Plug 'rebelot/kanagawa.nvim'
+Plug 'rose-pine/neovim'
+" LSP
 Plug 'dense-analysis/ale'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/nerdtree'
 Plug 'itchyny/lightline.vim'
-
+Plug 'f-person/git-blame.nvim'
+" More LSP
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
@@ -29,23 +31,33 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-vsnip'
+Plug 'ray-x/lsp_signature.nvim'
 Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
 Plug 'wellle/context.vim'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production'}
+Plug 'junegunn/fzf', {'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+" Miscellaneous
+Plug 'andweeb/presence.nvim'
+Plug 'chentoast/marks.nvim'
 
 call plug#end()
 
-colorscheme snazzy
+""colorscheme snazzy
+colorscheme kanagawa
 syntax on
 
-let g:jedi#use_splits_not_buffers = "right"
 let g:ale_linters = {
 			\ 'rust' : ['analyzer'],
 			\ 'go' : ['gopls'],
-			\ }
+			\ 'python' : ['pylsp', 'pylint', 'pyright'],
+			\ 'c' : ['clangd'],
+			\ 'c++' : ['clangd'],
+			\ 'sh' : ['language-server'],
+			\ 'tex' : ['texlab']}
 let g:lightline = {
       \ 'colorscheme': 'powerline',
       \ }
-
 
 if !has('gui_running')
 	set t_Co=256
@@ -107,13 +119,12 @@ lua <<EOF
       { name = 'cmdline' }
     })
   })
-
   -- Set up lspconfig.
   	local nvim_lsp = require'lspconfig'
 	local util = require('lspconfig/util')
-  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  nvim_lsp.gopls.setup ({
-    cmd = {"gopls", "serve"},
+	nvim_lsp.pyright.setup {}
+	nvim_lsp.gopls.setup ({ -- GO
+    cmd = {"gopls"},
     filetypes = {"go", "gomod"},
     root_dir = util.root_pattern("go.work", "go.mod", ".git"),
     settings = {
@@ -125,10 +136,9 @@ lua <<EOF
       },
     },
   })
-
+  nvim_lsp.texlab.setup{}
   nvim_lsp.pylsp.setup{} -- Python lsp
   nvim_lsp.clangd.setup{} -- C-lang LSP
-
   nvim_lsp.rust_analyzer.setup({ -- Rust LSP
     on_attach=on_attach,
     settings = {
@@ -150,5 +160,86 @@ lua <<EOF
         }
     }
 })
+	vim.api.nvim_create_autocmd('LspAttach', {
+	group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+	callback = function(ev)
+	-- Enable completion triggered by <c-x><c-o>
+	vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+	-- Buffer local mappings.
+	-- See `:help vim.lsp.*` for documentation on any of the below functions
+	local opts = { buffer = ev.buf }
+	vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+	vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+	vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+	vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+	vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+	vim.keymap.set('n', '<space>wl', function()
+	  print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+	end, opts)
+	vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+	vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+	vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+	vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+	vim.keymap.set('n', '<space>f', function()
+	  vim.lsp.buf.format { async = true }
+	end, opts)
+	end,
+})
+
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the five listed parsers should always be installed)
+  ensure_installed = { "c", "cpp", "rust", "go", "latex", "python" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  -- List of parsers to ignore installing (or "all")
+  ignore_install = { "javascript" },
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  highlight = {
+    enable = true,
+
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+    disable = function(lang, buf)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        end
+    end,
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+  vim.api.nvim_create_autocmd('FileType', { -- BASH lsp
+  pattern = 'sh',
+  callback = function()
+    vim.lsp.start({
+      name = 'bash-language-server',
+      cmd = { 'bash-language-server', 'start' },
+    })
+  end,
+})
+
+require("lsp_signature").setup{}
 require("bufferline").setup{}
+require("marks").setup{}
 EOF
