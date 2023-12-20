@@ -16,12 +16,15 @@ call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 Plug 'connorholyday/vim-snazzy'
 Plug 'rebelot/kanagawa.nvim'
 Plug 'rose-pine/neovim'
+Plug 'ellisonleao/gruvbox.nvim'
+Plug 'JoshPorterDev/nvim-base16'
 " LSP
 Plug 'dense-analysis/ale'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'preservim/nerdtree'
 Plug 'itchyny/lightline.vim'
 Plug 'f-person/git-blame.nvim'
+Plug 'vigoux/ltex-ls.nvim'
 " More LSP
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -32,20 +35,23 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'ray-x/lsp_signature.nvim'
+" QOL
 Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
 Plug 'wellle/context.vim'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production'}
 Plug 'junegunn/fzf', {'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-" Miscellaneous
 Plug 'andweeb/presence.nvim'
 Plug 'chentoast/marks.nvim'
+Plug 'andymass/vim-matchup'
+Plug 'tpope/vim-commentary'
 
 call plug#end()
 
-""colorscheme snazzy
-colorscheme kanagawa
+colorscheme base16-gruvbox-dark-medium
 syntax on
+
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 let g:ale_linters = {
 			\ 'rust' : ['analyzer'],
@@ -54,7 +60,8 @@ let g:ale_linters = {
 			\ 'c' : ['clangd'],
 			\ 'c++' : ['clangd'],
 			\ 'sh' : ['language-server'],
-			\ 'tex' : ['texlab']}
+			\ 'tex' : ['texlab', 'ltex']}
+
 let g:lightline = {
       \ 'colorscheme': 'powerline',
       \ }
@@ -62,7 +69,10 @@ let g:lightline = {
 if !has('gui_running')
 	set t_Co=256
 endif
-
+if (match($TERM, "-256color") != -1) && (match($TERM, "screen-256color") == -1)
+  " screen does not (yet) support truecolor
+  set termguicolors
+endif
 lua <<EOF
   -- Set up nvim-cmp.
   local root_dir = vim.fn.getcwd()
@@ -122,6 +132,7 @@ lua <<EOF
   -- Set up lspconfig.
   	local nvim_lsp = require'lspconfig'
 	local util = require('lspconfig/util')
+	nvim_lsp.ltex.setup{}
 	nvim_lsp.pyright.setup {}
 	nvim_lsp.gopls.setup ({ -- GO
     cmd = {"gopls"},
@@ -136,7 +147,12 @@ lua <<EOF
       },
     },
   })
-  nvim_lsp.texlab.setup{}
+	nvim_lsp.ltex.setup{
+		use_spellfile = false,
+		window_border = 'single',
+	}
+	nvim_lsp.tsserver.setup{} -- JavaScipt
+  nvim_lsp.texlab.setup{} -- Latex
   nvim_lsp.pylsp.setup{} -- Python lsp
   nvim_lsp.clangd.setup{} -- C-lang LSP
   nvim_lsp.rust_analyzer.setup({ -- Rust LSP
@@ -228,6 +244,9 @@ require'nvim-treesitter.configs'.setup {
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
   },
+	matchup = {
+		enable = true
+	}
 }
   vim.api.nvim_create_autocmd('FileType', { -- BASH lsp
   pattern = 'sh',
@@ -238,7 +257,6 @@ require'nvim-treesitter.configs'.setup {
     })
   end,
 })
-
 require("lsp_signature").setup{}
 require("bufferline").setup{}
 require("marks").setup{}
