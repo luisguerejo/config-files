@@ -1,0 +1,15 @@
+ctrl + shift - space : yabai -m window --toggle float
+cmd + shift - z : yabai -m window --toggle zoom-fullscreen
+cmd - 0x12 : yabai -m display --focus 1
+cmd - 0x13 : yabai -m display --focus 2
+cmd - 0x14 : yabai -m display --focus 3
+
+cmd + shift - 0x12 : yabai -m window --display 1
+cmd + shift - 0x13 : yabai -m window --display 2
+cmd + shift - 0x14 : yabai -m window --display 3
+
+cmd + ctrl - left : yabai -m window --focus west
+cmd + ctrl - right : yabai -m window --focus east
+cmd + ctrl - up : yabai -m window --focus north
+cmd + ctrl - down : yabai -m window --focus south
+

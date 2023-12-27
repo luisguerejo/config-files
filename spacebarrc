@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+
+spacebar -m config display all
+spacebar -m config position bottom
+spacebar -m config title on
+spacebar -m config spaces on
+spacebar -m config clock on
+spacebar -m config power on
+spacebar -m config text_font "JetBrains Mono:Bold:14.0"
+spacebar -m config clock_icon 􀐫
+spacebar -m config clock_format %m/%d/%y
+spacebar -m config space_icon_strip 1 2 3 4 5 6
+spacebar -m config power_icon_strip 􀛨 􀋧 
+spacebar -m config padding_left 25
+spacebar -m config padding_right 25
+spacebar -m config left_shell          on
+spacebar -m config left_shell_icon 􀩼 
+spacebar -m config left_shell_command  "whoami"
+
+spacebar -m config battery_icon_color 0xffffffff
+spacebar -m config power_icon_color 0xff61ff86
+spacebar -m config foreground_color 0xffa89984
+spacebar -m config background_color 0xff282828
+
+echo "spacebar configuration loaded.."
+
