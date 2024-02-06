@@ -48,7 +48,7 @@ gaps outer 3
 
 exec swayidle -w \
          timeout 180 'swaylock -f -c 000000' \
-				 timeout 60 "light -s sysfs/leds/kbd_backlight -S 0" resume "light -s sysfs/leds/kbd_backlight -S 35" \
+				 timeout 180 "light -s sysfs/leds/kbd_backlight -S 0" resume "light -s sysfs/leds/kbd_backlight -S 35" \
          timeout 180 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
          before-sleep 'swaylock -f -c 000000'
 #
@@ -217,6 +217,8 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym XF86MonBrightnessDown exec light -U 5
 
 #
 # Status Bar:
@@ -237,4 +239,8 @@ bar {
     # }
 }
 
+default_border pixel 1
+default_floating_border none
+titlebar_padding 1
+titlebar_border_thickness 1
 include @sysconfdir@/sway/config.d/*
