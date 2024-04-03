@@ -1,15 +1,19 @@
 ctrl + shift - space : yabai -m window --toggle float
 cmd + shift - z : yabai -m window --toggle zoom-fullscreen
-cmd - 0x12 : yabai -m display --focus 1
-cmd - 0x13 : yabai -m display --focus 2
-cmd - 0x14 : yabai -m display --focus 3
 
-cmd + shift - 0x12 : yabai -m window --display 1
-cmd + shift - 0x13 : yabai -m window --display 2
-cmd + shift - 0x14 : yabai -m window --display 3
+cmd - 0x12 : yabai -m space --focus 1
+cmd - 0x13 : yabai -m space --focus 2
+cmd - 0x14 : yabai -m space --focus 3
+cmd - 0x15 : yabai -m space --focus 4
+cmd - 0x16 : yabai -m space --focus 5
+cmd - 0x17 : yabai -m space --focus 6
+cmd - 0x18 : yabai -m space --focus 7
+cmd - 0x19 : yabai -m space --focus 8
 
 cmd + ctrl - left : yabai -m window --focus west
 cmd + ctrl - right : yabai -m window --focus east
 cmd + ctrl - up : yabai -m window --focus north
 cmd + ctrl - down : yabai -m window --focus south
+
+cmd - return : open -na /Applications/Alacritty.app
 
