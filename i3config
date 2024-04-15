@@ -186,7 +186,7 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+p exec "scrot"
+bindsym $mod+p exec --no-startup-id "scrot"
 bindsym $mod+r mode "resize"
 gaps inner 3
 gaps outer 0

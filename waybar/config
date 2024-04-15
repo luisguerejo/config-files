@@ -1,8 +1,7 @@
 {
     "layer": "top", // Waybar at top layer
     "position": "top", // Waybar position (top|bottom|left|right)
-    "height": 24, // Waybar height (to be removed for auto height)
-    // "width": 1280, // Waybar width
+    "height": 28, // Waybar height (to be removed for auto height)
     "spacing": 3, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
@@ -16,11 +15,11 @@
     //     "warp-on-scroll": false,
     //     "format": "{name}: {icon}",
     //     "format-icons": {
-    //         "1": "",
-    //         "2": "",
-    //         "3": "",
-    //         "4": "",
-    //         "5": "",
+    //         "1": "I",
+    //         "2": "II",
+    //         "3": "III",
+    //         "4": "IV",
+    //         "5": "V",
     //         "urgent": "",
     //         "focused": "",
     //         "default": ""
@@ -84,13 +83,14 @@
         }
     },
     "tray": {
-        // "icon-size": 21,
+        "icon-size": 20,
         "spacing": 10
     },
     "clock": {
+				"format": "{:%I:%M %p}",
         "timezone": "America/Chicago",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format-alt": "{:%Y/%m/%d %I:%M}"
     },
     "cpu": {
         "format": " {usage}%",
