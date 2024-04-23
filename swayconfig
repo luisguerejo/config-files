@@ -26,9 +26,9 @@ set $laptop eDP-1
 #set $menu  dmenu_path | dmenu | xargs swaymsg exec --
 set $menu  wofi --show drun
 
-output * bg $HOME/Documents/bg.jpg stretch
+output * bg $HOME/Documents/sun.jpg stretch
 #
-gaps inner 1
+gaps inner 3
 gaps outer 3
 
 ### Output configuration
@@ -39,12 +39,14 @@ gaps outer 3
 	   # Dualup
 		 # resolution 2560x2880
 		 # Ultrawide
-		 resolution 3440x1440
+		 # resolution 3440x1440
+		 # LUG Monitor
+		 resolution 2560x1440
 		 scale 1.00
 	 }
 
 	 output eDP-1 {
-		scale 1.50
+		scale 1.65
 		resolution 3024x1964
 	 }
 #
@@ -56,9 +58,9 @@ gaps outer 3
 #
 
 exec swayidle -w \
-         timeout 180 'swaylock -f -c 000000' \
+         timeout 600 'swaylock -f -c 000000' \
 				 timeout 180 "light -s sysfs/leds/kbd_backlight -S 0" resume "light -s sysfs/leds/kbd_backlight -S 35" \
-         timeout 180 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
 				 timeout 600 'systemctl hibernate' \
          before-sleep 'swaylock -f -c 000000'
 #
@@ -115,6 +117,7 @@ exec swayidle -w \
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+		bindsym $mod+Shift+m exec swaylock
 #
 # Moving around:
 #
@@ -232,6 +235,9 @@ mode "resize" {
 		bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 		bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
     bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+		bindsym XF86AudioPlay exec playerctl play-pause
+		bindsym XF86AudioNext exec playerctl next
+		bindsym XF86AudioPrev exec playerctl previous
 		bindsym $mod+Shift+S exec grim -g $(slurp) - | wl-copy
 
 
@@ -262,6 +268,9 @@ titlebar_border_thickness 1
 # For clamshell
 bindswitch --reload --locked lid:on output $laptop disable
 bindswitch --reload --locked lid:off output $laptop enable
+
+bindgesture swipe:left workspace prev
+bindgesture swipe:right workspace next
 
 
 include @sysconfdir@/sway/config.d/*
