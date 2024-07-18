@@ -15,7 +15,7 @@ window#waybar {
 }
 
 window#waybar.hidden {
-  opacity: 0.2;
+  opacity: 0.6;
 }
 
 #waybar.empty #window {
@@ -45,7 +45,7 @@ button {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
   background: inherit;
-  border-top: 2px solid #c9545d;
+  border-top: 2px solid #ffa844;
 }
 
 #workspaces button {
@@ -59,8 +59,8 @@ button:hover {
 #workspaces button.focused {
   /* box-shadow: inset 0 -2px #c9545d; */
   background-color: rgba(0,0,0,0.3);
-  color:#c6e2ff;
-  border-bottom: 2px solid #c6e2ff;
+  color:#ffffff;
+  border-bottom: 2px solid #ffa844;
 }
 
 #workspaces button.urgent {
@@ -147,7 +147,7 @@ button:hover {
 }
 
 label:focus {
-  background-color: #000000;
+  background-color: #808080;
 }
 
 #network.disconnected {

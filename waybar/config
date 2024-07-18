@@ -6,25 +6,24 @@
     // Choose the order of the modules
     "modules-left": ["sway/workspaces", "sway/mode", "sway/scratchpad", "custom/media"],
     "modules-center": ["sway/window"],
-    //"modules-right": ["mpd", "idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "temperature", "backlight", "keyboard-state", "battery", "battery#bat2", "clock", "tray"],
     "modules-right": ["mpd", "idle_inhibitor", "temperature", "cpu", "memory","network", "pulseaudio", "backlight", "keyboard-state", "battery", "tray", "clock"],
     // Modules configuration
-    // "sway/workspaces": {
-    //     "disable-scroll": true,
-    //     "all-outputs": true,
+    "sway/workspaces": {
+         "disable-scroll": true,
+        "all-outputs": true,
     //     "warp-on-scroll": false,
-    //     "format": "{name}: {icon}",
-    //     "format-icons": {
-    //         "1": "I",
-    //         "2": "II",
-    //         "3": "III",
-    //         "4": "IV",
-    //         "5": "V",
-    //         "urgent": "",
-    //         "focused": "",
-    //         "default": ""
-    //     }
-    // },
+         "format": "{icon}",
+         "format-icons": {
+             "1": "I",
+             "2": "II",
+             "3": "III",
+             "4": "IV",
+             "5": "V",
+             //"urgent": "",
+             //"focused": "",
+             //"default": ""
+         }
+    },
     "keyboard-state": {
         "capslock": true,
         "format": "{name} {icon}",
@@ -87,14 +86,14 @@
         "spacing": 10
     },
     "clock": {
-				"format": "{:%I:%M %p}",
+        "format": "{:%I:%M %p}",
         "timezone": "America/Chicago",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y/%m/%d %I:%M}"
     },
     "cpu": {
         "format": " {usage}%",
-//        "tooltip": false
+        "tooltip": true
     },
     "memory": {
         "format": " {}%"
