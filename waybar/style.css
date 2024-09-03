@@ -1,17 +1,15 @@
 * {
-  /* `otf-font-awesome` is required to be installed for icons */
   font-family: "JetBrains Mono";
   font-size: 14px;
   min-height: 0;
 }
 
 window#waybar {
-  background: transparent;
-  /*    background-color: rgba(43, 48, 59, 0.5); */
+	background-color: #282828;
   /*    border-bottom: 3px solid rgba(100, 114, 125, 0.5); */
-  color: #ffffff;
-  transition-property: background-color;
-  transition-duration: .5s;
+  color: #ebdbb2;
+  /* transition-property: background-color; */
+  /* transition-duration: .5s; */
 }
 
 window#waybar.hidden {
@@ -22,16 +20,14 @@ window#waybar.hidden {
   background-color: transparent;
 }
 
-#workspaces {
-}
-
 #window {
   margin: 2;
   padding-left: 8;
   padding-right: 8;
-  background-color: rgba(0,0,0,0.3);
+  background-color: transparent;
   font-size:14px;
   font-weight: bold;
+	border-bottom: 2px solid #b16286;
 }
 
 button {
@@ -58,9 +54,9 @@ button:hover {
 
 #workspaces button.focused {
   /* box-shadow: inset 0 -2px #c9545d; */
-  background-color: rgba(0,0,0,0.3);
-  color:#ffffff;
-  border-bottom: 2px solid #ffa844;
+  background-color: transparent;
+  color: #ebdbb2;
+  border-bottom: 2px solid #fb4934;
 }
 
 #workspaces button.urgent {
@@ -72,27 +68,40 @@ button:hover {
   border-bottom: 3px solid #ffffff;
 }
 
-#clock,
+#clock{
+	border-bottom: 2px solid #458588;
+}
+
+#cpu, #memory{
+	border-bottom: 2px solid #d79921;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+#pulseaudio,
+#wireplumber{
+	border-bottom: 2px solid #689d6a;
+	padding-left: 3px;
+	padding-right: 3px;
+	
+}
+#network{
+	border-bottom: 2px solid #98971a;
+}
 #battery,
-#cpu,
-#memory,
 #disk,
 #temperature,
 #backlight,
-#network,
-#pulseaudio,
-#wireplumber,
 #custom-media,
 #tray,
 #mode,
 #idle_inhibitor,
 #scratchpad,
 #mpd {
-  margin: 2px;
+  margin: 3px;
   padding-left: 4px;
   padding-right: 4px;
-  background-color: rgba(0,0,0,0.3);
-  color: #ffffff;
+  background-color: transparent;
+  color: #ebdbb2;
 }
 
 /* If workspaces is the leftmost module, omit left margin */
@@ -147,7 +156,7 @@ button:hover {
 }
 
 label:focus {
-  background-color: #808080;
+  background-color: transparent;
 }
 
 #network.disconnected {
