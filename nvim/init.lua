@@ -1,3 +1,8 @@
+vim.opt.shiftwidth = 8
+vim.opt.softtabstop = 8
+vim.opt.tabstop = 8
+vim.opt.relativenumber = true
+vim.opt.number = true
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -20,6 +25,7 @@ vim.opt.rtp:prepend(lazypath)
 -- This is also a good place to setup other settings (vim.opt)
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+vim.diagnostic.config({virtual_text = false})
 
 -- Setup lazy.nvim
 require("lazy").setup({
@@ -37,6 +43,22 @@ require("lazy").setup({
 			vim.lsp.inlay_hint.enable(true)
 			vim.lsp.enable('rust_analyzer')
 			vim.lsp.enable('gopls')
+
+			vim.api.nvim_create_autocmd("LspAttach", {
+			callback = function(event)
+			  local opts = { buffer = event.buf }
+			  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+			  vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+			  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+			  vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+			  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+			  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+			  vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+			  vim.keymap.set("n", "<leader>f", function()
+			    vim.lsp.buf.format { async = true }
+			  end, opts)
+			end,
+		      })
 		end
 	},
 	{
@@ -77,7 +99,4 @@ require("lazy").setup({
   checker = { enabled = true },
 })
 
-vim.opt.relativenumber = true
-vim.opt.number = true
 vim.cmd.colorscheme("base16-gruvbox-dark-hard")
-vim.lsp.enable('rust_analyzer')
