@@ -44,6 +44,17 @@ require("lazy").setup({
 			vim.lsp.enable('rust_analyzer')
 			vim.lsp.enable('gopls')
 
+			vim.diagnostic.config({
+				virtual_text = {
+				  prefix = "●",
+				  spacing = 4,
+				},
+				signs = true,
+				underline = true,
+				update_in_insert = false,
+				severity_sort = true,
+		       })
+
 			vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(event)
 			  local opts = { buffer = event.buf }
