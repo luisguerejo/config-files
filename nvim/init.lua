@@ -1,8 +1,9 @@
-vim.opt.shiftwidth = 8
-vim.opt.softtabstop = 8
-vim.opt.tabstop = 8
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.tabstop = 4
 vim.opt.relativenumber = true
 vim.opt.number = true
+vim.opt.clipboard = "unnamedplus"
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -30,13 +31,29 @@ vim.diagnostic.config({virtual_text = false})
 -- Setup lazy.nvim
 require("lazy").setup({
   spec = {
-	{"nvim-treesitter/nvim-treesitter", branch = 'master', lazy = false, build = ":TSUpdate"},
+	{"nvim-treesitter/nvim-treesitter",
+		branch = 'master',
+		lazy = false,
+		build = ":TSUpdate",
+		config = function()
+			require('nvim-treesitter.configs').setup {
+				ensure_installed = {"go", "lua", "vimdoc", "rust", "python"},
+				sync_install = false,
+				auto_install = true,
+				highlight = {
+					enable = true
+				},
+				indent = {
+					enable = true
+				},
+			}
+		end
+	},
 	{"f-person/git-blame.nvim", event = "VeryLazy"},
 	{"chentoast/marks.nvim", event = "VeryLazy", opts = {}},
 	{"tpope/vim-commentary"},
 	{"wellle/context.vim"},
-	{"preservim/nerdtree"},
-	{"JoshPorterDev/nvim-base16", lazy = false },
+	{"RRethy/base16-nvim", lazy = false},
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
@@ -80,13 +97,18 @@ require("lazy").setup({
 		    "hrsh7th/cmp-nvim-lsp",
 		    "hrsh7th/cmp-buffer",
 		    "hrsh7th/cmp-path",
+			"L3MON4D3/LuaSnip",
+			"saadparwaiz1/cmp_luasnip"
 		 },
 		 config = function()
 			 local cmp = require("cmp")
+				local luasnip = require("luasnip")
 			 cmp.setup({
 				 snippet = {
-					 expand = function() end,
-				 },
+					expand = function(args)
+						luasnip.lsp_expand(args.body)
+					end,
+				},
 				 mapping = cmp.mapping.preset.insert({
 					 ["<Tab>"] = cmp.mapping.select_next_item(),
 					 ["<S-Tab>"] = cmp.mapping.select_prev_item(),
@@ -95,6 +117,7 @@ require("lazy").setup({
 				 }),
 				 sources = cmp.config.sources({
 					 { name = "nvim_lsp" },
+					 { name = "luasnip"}
 				 }, {
 					 { name = "buffer" },
 					 { name = "path" },
@@ -110,6 +133,29 @@ require("lazy").setup({
 	{
 		"ibhagwan/fzf-lua",
 		opts = {}
+	},
+	{
+		"nvim-tree/nvim-tree.lua",
+		version = "*",
+		lazy = false,
+		dependencies = {
+				"nvim-tree/nvim-web-devicons",
+		},
+		config = function()
+				require("nvim-tree").setup{}
+		end,
+	},
+	{
+			"stevearc/conform.nvim",
+			opts = {
+				formatters_by_ft = {
+					go = {"gofmt", lsp_format = "fallback"}
+				},
+				format_on_save = {
+					timeout_ms = 500,
+					lsp_format = "fallback",
+				},
+			}
 	}
   },
   -- Configure any other settings here. See the documentation for more details.
