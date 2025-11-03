@@ -101,6 +101,15 @@ require("lazy").setup({
 				 }),
 			 })
 		 end,
+	},
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true
+	},
+	{
+		"ibhagwan/fzf-lua",
+		opts = {}
 	}
   },
   -- Configure any other settings here. See the documentation for more details.
