@@ -166,3 +166,8 @@ require("lazy").setup({
 })
 
 vim.cmd.colorscheme("base16-gruvbox-dark-hard")
+vim.keymap.set("n", "<leader>f", ":FzfLua<CR>", { noremap = true })
+-- Ignore yanking when using the change character
+vim.keymap.set("n", "c", "\"_c")
+vim.keymap.set("v", "c", "\"_c")
+vim.keymap.set("o", "c", "\"_c")
