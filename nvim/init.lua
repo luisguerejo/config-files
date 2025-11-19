@@ -60,6 +60,8 @@ require("lazy").setup({
 			vim.lsp.inlay_hint.enable(true)
 			vim.lsp.enable('rust_analyzer')
 			vim.lsp.enable('gopls')
+			vim.lsp.enable('basedpyright')
+			vim.lsp.enable('vtsls')
 
 			vim.diagnostic.config({
 				virtual_text = {
@@ -87,6 +89,23 @@ require("lazy").setup({
 			  end, opts)
 			end,
 		      })
+
+			-- vim.lsp.config('basedpyright').setup{
+			-- 	on_attach = on_attach,
+			-- 	settings = {
+			-- 		basedpyright = {
+			-- 			typeCheckingMode = "basic",
+			-- 		}
+			-- 	}
+			-- }
+			vim.lsp.config('basedpyright', {
+				settings = {
+					basedpyright = {
+						typeCheckingMode = 'standard',
+					}
+				}
+			})
+
 		end
 	},
 	{
@@ -166,7 +185,7 @@ require("lazy").setup({
 })
 
 vim.cmd.colorscheme("base16-gruvbox-dark-hard")
-vim.keymap.set("n", "<leader>f", ":FzfLua<CR>", { noremap = true })
+vim.keymap.set("n", "<leader>p", ":FzfLua<CR>", { noremap = true })
 -- Ignore yanking when using the change character
 vim.keymap.set("n", "c", "\"_c")
 vim.keymap.set("v", "c", "\"_c")
