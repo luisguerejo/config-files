@@ -57,6 +57,32 @@ require("lazy").setup({
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
+
+			local function smart_gd()
+				local params = vim.lsp.util.make_position_params()
+				vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result, ctx, _)
+					if err or not result or vim.tbl_isempty(result) then
+						print("Definition not found")
+						return
+					end
+
+					local target = vim.tbl_islist(result) and result[1] or result
+					local target_uri = target.uri or target.targetUri
+					local target_file = vim.uri_to_fname(target_uri)
+					local current_file = vim.api.nvim_buf_get_name(0)
+
+					if target_file ~= current_file then
+						-- Open in new tab if it's a different file
+						vim.cmd('tabedit ' .. target_file)
+						local range = target.range or target.targetSelectionRange
+						vim.api.nvim_win_set_cursor(0, { range.start.line + 1, range.start.character })
+					else
+						-- Standard jump if it's the same file
+						vim.lsp.buf.definition()
+					end
+				end)
+			end
+
 			vim.lsp.inlay_hint.enable(true)
 			vim.lsp.enable('rust_analyzer')
 			vim.lsp.enable('gopls')
@@ -77,7 +103,7 @@ require("lazy").setup({
 			vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(event)
 			  local opts = { buffer = event.buf }
-			  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+			  vim.keymap.set("n", "gd", smart_gd, opts)
 			  vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 			  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
 			  vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
