@@ -201,16 +201,19 @@ require("lazy").setup({
 					lsp_format = "fallback",
 				},
 			}
+	},
+	{
+		"lewis6991/gitsigns.nvim", event = "BufReadPre", opts = {}
 	}
   },
   -- Configure any other settings here. See the documentation for more details.
   -- colorscheme that will be used when installing plugins.
-  install = { colorscheme = { "base16-gruvbox-dark-hard" } },
+  install = { colorscheme = { "base16-ayu-mirage" } },
   -- automatically check for plugin updates
   checker = { enabled = true },
 })
 
-vim.cmd.colorscheme("base16-gruvbox-dark-hard")
+vim.cmd.colorscheme("base16-ayu-mirage")
 vim.keymap.set("n", "<leader>p", ":FzfLua<CR>", { noremap = true })
 -- Ignore yanking when using the change character
 vim.keymap.set("n", "c", "\"_c")
